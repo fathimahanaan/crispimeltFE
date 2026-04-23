@@ -18,12 +18,12 @@ export default function CategoryList() {
 
       {/* HEADER */}
       <div className="text-center mb-14">
-        <h1 className="text-5xl font-bold text-[#3B2F2F] tracking-tight">
+        <h1 className="text-3xl font-semibold text-[#3B2F2F] tracking-tight">
           Our Categories
         </h1>
 
         <p className="text-gray-500 mt-3 text-sm md:text-base">
-          Explore freshly baked delights crafted with love 🍞✨
+          Explore freshly baked delights crafted with love
         </p>
       </div>
 
@@ -57,10 +57,7 @@ export default function CategoryList() {
                 {cat.categoryName}
               </h2>
 
-              <p className="text-xs text-gray-500 mt-2">
-                Freshly baked daily selection
-              </p>
-
+            
               {/* BUTTON */}
               <div className="mt-6">
 

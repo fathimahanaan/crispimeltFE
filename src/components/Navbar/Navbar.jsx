@@ -9,7 +9,7 @@ export default function Header() {
 
       {/* 🟤 TOP BAR */}
       <div className="bg-[#5D3838] text-white text-sm py-2 text-center font-[Lora]">
-        🍰 Freshly baked treats every morning • Free delivery over £20
+        Freshly baked treats every morning •  
       </div>
 
       {/* NAVBAR */}
