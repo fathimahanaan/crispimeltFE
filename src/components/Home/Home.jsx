@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div>
       {/* HERO SECTION */}
-      <section className="min-h-screen flex items-center bg-[#FFF7F2] px-10 font-[Lora]">
+  <section className="min-h-[calc(100vh-140px)] flex items-center bg-[#FFF7F2] px-10 font-[Lora]">
         <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-10">
 
           {/* Left Content */}

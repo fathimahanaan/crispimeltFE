@@ -40,10 +40,7 @@ function App() {
           path: "login",
           element:  <LoginPage/>,
         },
-           {
-          path: "login",
-          element:  <LoginPage/>,
-        },
+        
       ],
     },
   ]);

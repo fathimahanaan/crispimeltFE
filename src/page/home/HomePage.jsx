@@ -4,7 +4,7 @@ import CategoryList from "../../components/category/CategoryList";
 
 export default function HomePage() {
   return (
-    <div>
+    <div >
       <Home />
       <CategoryList />
     </div>

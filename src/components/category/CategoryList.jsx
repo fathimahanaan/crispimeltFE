@@ -14,12 +14,12 @@ export default function CategoryList() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF7F2] to-[#fffdfb] py-20 px-6 font-[Lora]">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFF7F2] to-[#fffdfb] py-20 px-6 font-[Inter]">
 
       {/* HEADER */}
       <div className="text-center mb-14">
-        <h1 className="text-3xl font-semibold text-[#3B2F2F] tracking-tight">
-          Our Categories
+        <h1 className="text-3xl font-semibold text-[#6B3F3F] tracking-tight">
+          Signature Dishes
         </h1>
 
         <p className="text-gray-500 mt-3 text-sm md:text-base">
@@ -28,13 +28,14 @@ export default function CategoryList() {
       </div>
 
       {/* GRID */}
-      <div className="max-w-6xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+   {/* GRID */}
+<div className="max-w-5xl mx-auto grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-        {categories.map((cat) => (
-          <div
-            key={cat._id}
-            className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#f3e7df]"
-          >
+  {categories.slice(0, 10).map((cat) => (
+    <div
+      key={cat._id}
+      className="group relative bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#f3e7df]"
+    >
 
             {/* IMAGE */}
             <div className="h-44 overflow-hidden bg-[#fff1e8] relative">

@@ -3,15 +3,20 @@ import axios from "axios";
 import { base_url } from "../../utils/constants";
 import { toast } from "react-toastify";
 
-export default function useGetAllProducts() {
+export default function useGetAllProducts(selectedCategory) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getAllProducts = async () => {
+  const getAllProducts = async (category) => {
     setLoading(true);
 
     try {
-      const res = await axios.get(`${base_url}/product`, {
+      const url =
+        category && category !== "All"
+          ? `${base_url}/product?category=${category}`
+          : `${base_url}/product`;
+
+      const res = await axios.get(url, {
         withCredentials: true,
       });
 
@@ -26,8 +31,8 @@ export default function useGetAllProducts() {
   };
 
   useEffect(() => {
-    getAllProducts();
-  }, []);
+    getAllProducts(selectedCategory);
+  }, [selectedCategory]); // 🔥 IMPORTANT
 
   return {
     products,

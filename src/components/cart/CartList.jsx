@@ -24,13 +24,13 @@ export default function CartList() {
     );
   }
 
-  // TOTAL
-  const total = cart.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+  // ✅ FIXED: prevents crash if product is null
+  const total = (cart || []).reduce(
+    (sum, item) =>
+      sum + (item?.product?.price ?? 0) * (item?.quantity ?? 0),
     0
   );
 
-  // DELIVERY LOGIC
   const deliveryFee = total > 100 ? 0 : 10;
   const grandTotal = total + deliveryFee;
 
@@ -60,8 +60,8 @@ export default function CartList() {
 
               {/* IMAGE */}
               <img
-                src={item.product.image}
-                alt={item.product.name}
+                src={item?.product?.image}
+                alt={item?.product?.name}
                 className="w-24 h-24 object-cover rounded-xl"
               />
 
@@ -69,29 +69,29 @@ export default function CartList() {
               <div className="flex-1">
 
                 <h2 className="text-lg font-semibold text-[#3B2F2F]">
-                  {item.product.name}
+                  {item?.product?.name}
                 </h2>
 
                 <p className="text-sm text-gray-500 mt-1">
-                  AED {item.product.price}
+                  AED {item?.product?.price ?? 0}
                 </p>
 
                 <span className="inline-block mt-2 text-xs bg-[#C8A24A]/10 text-[#C8A24A] px-2 py-1 rounded-full">
-                  Qty: {item.quantity}
+                  Qty: {item?.quantity ?? 0}
                 </span>
 
               </div>
 
               {/* PRICE */}
               <div className="text-lg font-semibold text-[#3B2F2F]">
-                AED {item.product.price * item.quantity}
+                AED {(item?.product?.price ?? 0) * (item?.quantity ?? 0)}
               </div>
 
               {/* REMOVE BUTTON */}
               <button
                 onClick={async () => {
                   await removeFromCart(item._id);
-                  refetch(); // refresh cart after delete
+                  refetch();
                 }}
                 disabled={removeLoading}
                 className="text-gray-400 hover:text-red-500 transition disabled:opacity-50"
@@ -125,19 +125,13 @@ export default function CartList() {
               </span>
             </div>
 
-            <p className="text-xs text-gray-400">
-              Free delivery on orders above AED 100
-            </p>
-
           </div>
 
-          {/* TOTAL */}
           <div className="border-t mt-4 pt-4 flex justify-between text-lg font-semibold text-[#3B2F2F]">
             <span>Total</span>
             <span>AED {grandTotal}</span>
           </div>
 
-          {/* CHECKOUT */}
           <button className="w-full mt-6 bg-[#8B5E3C] text-white py-3 rounded-lg hover:opacity-90 transition">
             Checkout
           </button>
@@ -145,7 +139,6 @@ export default function CartList() {
         </div>
 
       </div>
-
     </div>
   );
 }

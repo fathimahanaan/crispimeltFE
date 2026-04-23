@@ -1,4 +1,3 @@
- 
 import React, { useState } from "react";
 import useLogin from "../../hooks/auth/useLogin";
 
@@ -39,32 +38,40 @@ export default function LoginPage() {
 
           <form
             className="flex flex-col gap-4"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+            autoComplete="on"
           >
+
             {/* EMAIL */}
             <input
               type="email"
+              name="email"
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="border border-[#e5d4c8] p-3 rounded-lg focus:outline-none focus:border-[#8B5E3C] transition"
               required
+              autoComplete="email"
             />
 
             {/* PASSWORD */}
             <input
               type="password"
+              name="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="border border-[#e5d4c8] p-3 rounded-lg focus:outline-none focus:border-[#8B5E3C] transition"
               required
+              autoComplete="current-password"
             />
 
             {/* LOGIN BUTTON */}
             <button
-              type="button"
-              onClick={handleLogin}
+              type="submit"
               disabled={loading}
               className="bg-[#8B5E3C] text-white p-3 rounded-lg mt-2 hover:shadow-lg hover:scale-[1.02] transition-all"
             >
@@ -85,4 +92,3 @@ export default function LoginPage() {
     </div>
   );
 }
- 
