@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import useLogin from "../../hooks/auth/useLogin";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { login, loading } = useLogin();
+  const navigate = useNavigate(); // ✅ MOVE HERE
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,35 +47,28 @@ export default function LoginPage() {
             autoComplete="on"
           >
 
-            {/* EMAIL */}
             <input
               type="email"
-              name="email"
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-[#e5d4c8] p-3 rounded-lg focus:outline-none focus:border-[#8B5E3C] transition"
+              className="border border-[#e5d4c8] p-3 rounded-sm outline-none"
               required
-              autoComplete="email"
             />
 
-            {/* PASSWORD */}
             <input
               type="password"
-              name="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-[#e5d4c8] p-3 rounded-lg focus:outline-none focus:border-[#8B5E3C] transition"
+              className="border border-[#e5d4c8] p-3 rounded-sm outline-none"
               required
-              autoComplete="current-password"
             />
 
-            {/* LOGIN BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#8B5E3C] text-white p-3 rounded-lg mt-2 hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="bg-[#8B5E3C] text-white p-3 rounded-lg mt-2"
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -82,7 +77,10 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Don’t have an account?{" "}
-            <span className="text-[#8B5E3C] font-medium cursor-pointer hover:underline">
+            <span
+              onClick={() => navigate("/register")}
+              className="text-[#8B5E3C] font-medium cursor-pointer hover:underline"
+            >
               Register
             </span>
           </p>

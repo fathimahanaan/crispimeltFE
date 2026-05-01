@@ -8,6 +8,9 @@ import ShopPage from "./page/shop/ShopPage";
 import ViewProduct from "./components/product/ViewProduct";
 import CartList from "./components/cart/CartList";
 import LoginPage from "./page/auth/LoginPage";
+import RegisterPage from "./page/auth/RegisterPage";
+import VerifyOtpPage from "./page/auth/VerifyOtpPage";
+import About from "./components/about/About";
 
 function App() {
   const router = createBrowserRouter([
@@ -16,7 +19,7 @@ function App() {
       element: <Layout />,
       errorElement: (
         <div className="text-center mt-20 text-2xl font-bold">
-          Page Not Found
+          Page under construction
         </div>
       ),
       children: [
@@ -40,6 +43,18 @@ function App() {
           path: "login",
           element:  <LoginPage/>,
         },
+        {
+          path: "register",
+          element:  <RegisterPage/>,
+        },
+        {
+          path: "verify-otp",
+          element: <VerifyOtpPage/>,
+        },
+        {
+          path: "about",
+          element: <About/>,
+        }
         
       ],
     },
