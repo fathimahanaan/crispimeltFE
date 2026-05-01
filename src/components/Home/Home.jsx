@@ -57,7 +57,7 @@ export default function Home() {
           {/* Right Image */}
           <div className="md:w-1/2 flex justify-center">
             <img
-              src="/images/tres.png"
+              src="/images/image2.png"
               alt="Bakery Items"
               loading="lazy"
               className="w-full max-w-md md:max-w-lg object-contain"
