@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
- 
+import { base_url } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { base_url } from "../../utils/constants";
 
 export default function useRegister() {
   const [loading, setLoading] = useState(false);
@@ -21,20 +20,30 @@ export default function useRegister() {
 
       toast.success(res.data.message);
 
-      // go to OTP verification page
-      navigate("/verify-otp", { state: { email } });
+      // always prepare OTP flow
+      localStorage.setItem("verifyEmail", email);
+
+      navigate("/verify-otp", {
+        state: { email },
+      });
 
     } catch (err) {
-      // handle express-validator errors
-      if (err?.response?.data?.errors) {
-        err.response.data.errors.forEach((e) => {
-          toast.error(e.msg);
+      const data = err?.response?.data;
+
+      // 🔥 IMPORTANT: user exists but not verified
+      if (data?.requireOtp) {
+        toast.info("OTP already sent. Please verify your account.");
+
+        localStorage.setItem("verifyEmail", data.email);
+
+        navigate("/verify-otp", {
+          state: { email: data.email },
         });
-      } else {
-        toast.error(
-          err?.response?.data?.message || "Registration failed"
-        );
+
+        return;
       }
+
+      toast.error(data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }

@@ -20,11 +20,25 @@ export default function useLogin() {
 
       toast.success(res.data.message);
 
-      navigate("/"); // redirect after login
+      // ✅ normal login success
+      navigate("/");
     } catch (err) {
-      toast.error(
-        err?.response?.data?.message || "Login failed"
-      );
+      const data = err?.response?.data;
+
+      // 🚨 OTP REQUIRED CASE (THIS WAS MISSING)
+      if (data?.requireOtp) {
+        localStorage.setItem("verifyEmail", data.email);
+
+        toast.info("Please verify your account");
+
+        navigate("/verify-otp", {
+          state: { email: data.email },
+        });
+
+        return;
+      }
+ 
+      toast.error(data?.message || "Login failed");
     } finally {
       setLoading(false);
     }

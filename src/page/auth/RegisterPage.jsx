@@ -24,7 +24,12 @@ export default function RegisterPage() {
       return alert("Phone number must be 10-15 digits");
     }
 
-    await register(name, email, password, phoneNumber);
+    const result = await register(name, email, password, phoneNumber);
+
+    // 🔥 fallback safety (if hook doesn't navigate)
+    if (result?.requireOtp || result?.success) {
+      localStorage.setItem("verifyEmail", email);
+    }
   };
 
   return (

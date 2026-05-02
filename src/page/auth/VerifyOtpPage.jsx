@@ -4,19 +4,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useVerifyOtp from "../../hooks/auth/useVerifyOpt";
 import useResendOtp from "../../hooks/auth/useResendOtp";
 
-export default function VerifyOtpPage() {
+export default function VerifyOptPage() {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [email, setEmail] = useState("");
 
   const inputsRef = useRef([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { verifyOtp, loading } = useVerifyOtp();
   const { resendOtp, loading: resendLoading } = useResendOtp();
 
-  const location = useLocation();
-
-  // ✅ get email safely (state OR localStorage)
+  // ✅ get email from login/register or storage
   useEffect(() => {
     const savedEmail =
       location.state?.email || localStorage.getItem("verifyEmail");
@@ -27,7 +26,12 @@ export default function VerifyOtpPage() {
     }
   }, [location.state]);
 
-  // OTP input change
+  // ✅ focus first input
+  useEffect(() => {
+    inputsRef.current[0]?.focus();
+  }, []);
+
+  // ✅ handle input change
   const handleChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;
 
@@ -35,12 +39,19 @@ export default function VerifyOtpPage() {
     newOtp[index] = value;
     setOtp(newOtp);
 
+    // auto move
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
+
+    // auto verify safely
+    const code = newOtp.join("");
+    if (code.length === 6 && !code.includes("")) {
+      handleVerify(code);
+    }
   };
 
-  // backspace navigation
+  // backspace
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
@@ -48,31 +59,31 @@ export default function VerifyOtpPage() {
   };
 
   // verify OTP
-  const handleVerify = async () => {
-    const code = otp.join("");
+  const handleVerify = async (manualOtp) => {
+    const code = manualOtp || otp.join("");
 
-    if (!email) {
-      return toast.error("Email missing. Please enter email.");
-    }
+    if (!email) return toast.error("Email missing");
 
     if (code.length !== 6) {
-      return toast.error("Enter full OTP");
+      return toast.error("Enter complete OTP");
     }
 
     await verifyOtp(email, code);
+
+    // cleanup handled here
+    localStorage.removeItem("verifyEmail");
+    navigate("/");
   };
 
   // resend OTP
   const handleResend = async () => {
-    if (!email) {
-      toast.error("Enter email first");
-      return;
-    }
+    if (!email) return toast.error("Email required");
 
+    setOtp(Array(6).fill(""));
     await resendOtp(email);
   };
 
-  // if email missing → fallback UI
+  // fallback UI
   if (!email) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -106,7 +117,6 @@ export default function VerifyOtpPage() {
 
       <div className="bg-white p-10 rounded-2xl shadow-xl border w-full max-w-md text-center">
 
-        {/* TITLE */}
         <h1 className="text-2xl font-semibold text-[#5D3838]">
           Verify OTP
         </h1>
@@ -115,7 +125,7 @@ export default function VerifyOtpPage() {
           Enter the 6-digit code sent to <b>{email}</b>
         </p>
 
-        {/* OTP INPUTS */}
+        {/* OTP inputs */}
         <div className="flex justify-center gap-2 mb-6">
           {otp.map((digit, index) => (
             <input
@@ -133,7 +143,7 @@ export default function VerifyOtpPage() {
 
         {/* VERIFY BUTTON */}
         <button
-          onClick={handleVerify}
+          onClick={() => handleVerify()}
           disabled={loading}
           className="bg-[#8B5E3C] text-white px-6 py-3 rounded-lg w-full disabled:opacity-50"
         >
@@ -156,6 +166,7 @@ export default function VerifyOtpPage() {
           onClick={() => {
             localStorage.removeItem("verifyEmail");
             setEmail("");
+            setOtp(Array(6).fill(""));
           }}
           className="text-xs text-gray-400 mt-3 cursor-pointer hover:underline"
         >
@@ -163,7 +174,6 @@ export default function VerifyOtpPage() {
         </p>
 
       </div>
-
     </div>
   );
 }

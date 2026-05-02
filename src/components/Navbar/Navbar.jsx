@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { navItems } from "../../utils/NavItems";
 import { navItems2 } from "../../utils/NavItems2";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaBars } from "react-icons/fa";
 import useGetWishlist from "../../hooks/wishlist/useGetWislist";
+import MobileMenu from "./MobileMenu";
 
 export default function Navbar() {
   const { wishlist } = useGetWishlist();
+  const [open, setOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50">
@@ -16,38 +18,28 @@ export default function Navbar() {
         Freshly baked treats every morning
       </div>
 
-      {/* NAVBAR 1 */}
-      <nav className="bg-white shadow-sm">
+      {/* DESKTOP NAVBAR */}
+      <nav className="bg-white shadow-sm hidden md:block">
         <div className="max-w-6xl mx-auto px-6 py-6 grid grid-cols-3 items-center">
 
-          {/* LEFT - WISHLIST */}
+          {/* LEFT */}
           <div className="flex justify-start text-sm font-medium">
-
             <NavLink
               to="/wishlist"
-              className={({ isActive }) =>
-                `relative flex items-center gap-2 transition ${
-                  isActive
-                    ? "text-[#C96A6A] font-semibold"
-                    : "text-[#6B3F3F]"
-                }`
-              }
+              className="relative flex items-center gap-2 text-[#6B3F3F]"
             >
               <FaHeart className="text-xs" />
-
               Wishlist
 
-              {/* BADGE */}
               {wishlist?.length > 0 && (
                 <span className="absolute -top-2 -right-4 text-[10px] bg-[#C96A6A] text-white w-4 h-4 flex items-center justify-center rounded-full">
                   {wishlist.length}
                 </span>
               )}
             </NavLink>
-
           </div>
 
-          {/* CENTER LOGO */}
+          {/* LOGO */}
           <div className="flex justify-center">
             <Link
               to="/"
@@ -57,7 +49,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* RIGHT NAV ITEMS */}
+          {/* RIGHT */}
           <div className="flex justify-end items-center gap-8 text-sm font-medium">
             {navItems.map((item) => (
               <NavLink
@@ -78,8 +70,8 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* NAVBAR 2 */}
-      <nav className="bg-white border-t border-gray-100">
+      {/* NAVBAR 2 (DESKTOP ONLY) */}
+      <nav className="hidden md:block bg-white border-t border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-3 flex justify-center">
           <div className="flex items-center gap-10 text-[#6B3F3F] text-sm font-medium">
             {navItems2.map((item) => (
@@ -98,6 +90,30 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* MOBILE HEADER */}
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white shadow-sm">
+
+        {/* MENU BUTTON */}
+        <button onClick={() => setOpen(true)}>
+          <FaBars size={20} />
+        </button>
+
+        {/* LOGO */}
+        <Link
+          to="/"
+          className="text-2xl font-[Corinthia] text-[#6B3F3F]"
+        >
+          Crispimelts
+        </Link>
+
+        {/* EMPTY RIGHT SPACE (balance) */}
+        <div className="w-6"></div>
+
+      </div>
+
+      {/* MOBILE MENU */}
+      <MobileMenu open={open} setOpen={setOpen} />
 
     </header>
   );
