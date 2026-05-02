@@ -1,14 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function About() {
   return (
-    <section className="py-24 px-6 md:px-15 lg:px-20 xl:px-60 bg-white">
+    <section className="py-24 px-6 md:px-15 lg:px-20 xl:px-60 bg-[#faf7f4]">
 
-      <div className="border-4 border-amber-900 rounded-sm p-10">
+      <div className="border border-[#6B3F3F] rounded-sm p-10 bg-white shadow-sm">
 
         {/* Heading */}
-        <div className="text-center mb-16 p-6 rounded-md bg-gradient-to-r from-amber-100 via-amber-000 to-amber-100">
-          <h2 className="text-2xl md:text-4xl font-[Inter] text-amber-900 border-b-2 border-amber-700 pb-2 inline-block">
+        <div className="text-center mb-16 p-6 rounded-sm bg-[#f3e7df]">
+          <h2 className="text-2xl md:text-4xl font-[Inter] text-[#6B3F3F] border-b-2 border-[#C96A6A] pb-2 inline-block">
             About Crispimelts
           </h2>
         </div>
@@ -21,7 +22,7 @@ export default function About() {
             <img
               src="/images/tres.png"
               alt="Crispimelts Bakery"
-              className="shadow-lg w-[320px] md:w-[360px] object-cover rounded-md border border-amber-200"
+              className="shadow-md w-[320px] md:w-[360px] object-cover rounded-sm border border-[#f3e7df]"
             />
           </div>
 
@@ -30,7 +31,7 @@ export default function About() {
 
             <div>
               <p className="text-gray-700 leading-relaxed text-lg">
-                At <span className="font-semibold text-amber-900">Crispimelts</span>,
+                At <span className="font-semibold text-[#6B3F3F]">Crispimelts</span>,
                 we are passionate about creating fresh, flavorful bakery products
                 that bring joy to everyday moments. With a focus on quality ingredients
                 and expert baking, we craft each item to deliver the perfect balance
@@ -45,13 +46,13 @@ export default function About() {
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-amber-900 mb-2">
+              <h3 className="text-xl font-semibold text-[#6B3F3F] mb-2">
                 Our Bakery Industry Experience
               </h3>
 
               <p className="text-gray-700 leading-relaxed text-lg">
                 With over 20–30 years of experience in the bakery industry,
-                <span className="font-semibold text-amber-900"> Crispimelts </span>
+                <span className="font-semibold text-[#6B3F3F]"> Crispimelts </span>
                 is built on a strong foundation of expertise, innovation,
                 and dedication. Our journey spans large-scale bakery production,
                 product development, and deep market understanding across the region.
@@ -64,14 +65,13 @@ export default function About() {
               </p>
             </div>
 
-            <a
-              href="https://wa.me/971525657667"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-3 bg-amber-900 text-white rounded-sm font-[Inter] text-sm hover:bg-amber-800 transition"
+            {/* SHOP BUTTON (REPLACED WHATSAPP) */}
+            <Link
+              to="/shop"
+              className="inline-block px-8 py-3 bg-[#6B3F3F] text-white rounded-sm font-[Inter] text-sm hover:bg-[#C96A6A] transition"
             >
-              Order Cake
-            </a>
+              Shop
+            </Link>
 
           </div>
         </div>
@@ -80,22 +80,22 @@ export default function About() {
         <div className="grid md:grid-cols-3 gap-8 text-center">
 
           {/* Passion */}
-          <div className="p-6 border border-amber-300 rounded-md hover:shadow-md transition bg-amber-50">
-            <h4 className="text-xl font-semibold text-amber-900 mb-2">
+          <div className="p-6 border border-[#f3e7df] rounded-sm hover:shadow-md transition bg-[#fffaf7]">
+            <h4 className="text-xl font-semibold text-[#6B3F3F] mb-2">
               Led by Passion
             </h4>
 
             <p className="text-gray-700 text-lg leading-relaxed">
               Baking is more than a process at
-              <span className="font-semibold text-amber-900"> Crispimelts, </span>
+              <span className="font-semibold text-[#6B3F3F]"> Crispimelts, </span>
               it’s our passion. We pour care and dedication into every product
               to create flavors that bring comfort, joy, and lasting memories.
             </p>
           </div>
 
           {/* Inspiration */}
-          <div className="p-6 border border-amber-300 rounded-md hover:shadow-md transition bg-amber-50">
-            <h4 className="text-xl font-semibold text-amber-900 mb-2">
+          <div className="p-6 border border-[#f3e7df] rounded-sm hover:shadow-md transition bg-[#fffaf7]">
+            <h4 className="text-xl font-semibold text-[#6B3F3F] mb-2">
               Led by Inspiration
             </h4>
 
@@ -107,8 +107,8 @@ export default function About() {
           </div>
 
           {/* Vision */}
-          <div className="p-6 border border-amber-300 rounded-md hover:shadow-md transition bg-amber-50">
-            <h4 className="text-xl font-semibold text-amber-900 mb-2">
+          <div className="p-6 border border-[#f3e7df] rounded-sm hover:shadow-md transition bg-[#fffaf7]">
+            <h4 className="text-xl font-semibold text-[#6B3F3F] mb-2">
               Our Vision
             </h4>
 

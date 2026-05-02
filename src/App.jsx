@@ -11,6 +11,7 @@ import LoginPage from "./page/auth/LoginPage";
 import RegisterPage from "./page/auth/RegisterPage";
 import VerifyOtpPage from "./page/auth/VerifyOtpPage";
 import About from "./components/about/About";
+import Wishlist from "./components/wishlist/Wishlist";
 
 function App() {
   const router = createBrowserRouter([
@@ -54,6 +55,10 @@ function App() {
         {
           path: "about",
           element: <About/>,
+        },
+         {
+          path: "wishlist",
+          element:  <Wishlist/>,
         }
         
       ],

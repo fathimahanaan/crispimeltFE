@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import useGetSingleProduct from "../../hooks/product/useGetSingleProduct";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import useAddtoCart from "../../hooks/cart/useAddtoCart";
+import useWishList from "../../hooks/auth/useWishList";
 
 const Stars = ({ rating = 4 }) => (
   <div className="flex gap-1 text-amber-500 text-sm">
@@ -14,10 +15,23 @@ const Stars = ({ rating = 4 }) => (
 
 export default function ViewProduct() {
   const { id } = useParams();
+
   const { product, loading } = useGetSingleProduct(id);
   const { addToCart, loading: cartLoading } = useAddtoCart();
+  const { toggleWishlist, loading: wishlistLoading } = useWishList();
 
   const [quantity, setQuantity] = useState(1);
+  const [liked, setLiked] = useState(false);
+
+  const handleWishlist = async () => {
+    const res = await toggleWishlist(product._id);
+
+    if (res?.message?.includes("Added")) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -36,78 +50,100 @@ export default function ViewProduct() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#faf7f4] to-[#f3ede7] px-6 py-14 font-[Lora]">
-      
-      <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 bg-white rounded-sm   overflow-hidden">
-        
+    <div className="min-h-screen bg-[#faf7f4] px-6 py-14 font-[Lora]">
+
+      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 bg-white border-2 border-[#f3e7df] rounded-sm overflow-hidden">
+
         {/* IMAGE */}
-        <div className="relative bg-white">
+        <div className="bg-white">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-[400px] object-cover hover:scale-105 transition duration-500"
+            className="w-full h-[420px] object-cover"
           />
         </div>
 
         {/* DETAILS */}
-        <div className="p-10 flex flex-col justify-center">
+        <div className="p-8 flex flex-col justify-center">
 
-          <p className="text-xs text-amber-700 uppercase tracking-widest font-medium">
+          {/* CATEGORY */}
+          <p className="text-xs text-gray-500 uppercase tracking-widest">
             {product.category?.categoryName}
           </p>
 
-          <h1 className="text-4xl font-bold text-[#2f2a26] mt-2 leading-snug">
+          {/* NAME */}
+          <h1 className="text-3xl font-semibold text-[#3B2F2F] mt-2">
             {product.name}
           </h1>
 
+          {/* STARS */}
           <div className="mt-3">
             <Stars rating={4} />
           </div>
 
-          <p className="text-gray-600 mt-5 leading-relaxed text-sm">
+          {/* DESCRIPTION */}
+          <p className="text-gray-600 mt-5 text-sm leading-relaxed">
             {product.description}
           </p>
 
-          <p className="text-3xl font-bold text-[#3B2F2F] mt-6">
+          {/* PRICE */}
+          <p className="text-2xl font-semibold text-[#3B2F2F] mt-6">
             AED {product.price}
           </p>
 
           {/* QUANTITY */}
           <div className="flex items-center gap-4 mt-6">
-            
+
             <button
               onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-              className="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-gray-100 transition"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-[#f3e7df] hover:bg-gray-50 transition"
             >
               -
             </button>
 
-            <span className="text-xl font-semibold w-8 text-center">
+            <span className="text-lg font-medium w-8 text-center">
               {quantity}
             </span>
 
             <button
               onClick={() => setQuantity((prev) => prev + 1)}
-              className="w-10 h-10 flex items-center justify-center rounded-full border hover:bg-gray-100 transition"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-[#f3e7df] hover:bg-gray-50 transition"
             >
               +
             </button>
+
           </div>
 
           {/* BUTTONS */}
-          <div className="flex gap-4 mt-10">
+          <div className="flex gap-3 mt-8">
 
-            <button className="flex-1 flex items-center justify-center gap-2 py-3  border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
-              <FaHeart />
-             Add to Wishlist
+            {/* WISHLIST */}
+            <button
+              onClick={handleWishlist}
+              disabled={wishlistLoading}
+              className="flex-1 text-xs py-2 rounded-full flex items-center justify-center gap-1
+              border border-[#f3e7df] text-[#6B3F3F] shadow-sm
+              hover:bg-[#C96A6A] hover:text-white hover:border-[#C96A6A]
+              transition-all duration-200 active:scale-95 disabled:opacity-50"
+            >
+              <FaHeart className={liked ? "text-red-500" : ""} />
+              {wishlistLoading
+                ? "Updating..."
+                : liked
+                ? "Wishlisted"
+                : "Wishlist"}
             </button>
 
+            {/* CART */}
             <button
               onClick={() => addToCart(product._id, quantity)}
               disabled={cartLoading}
-              className="flex-1 flex items-center justify-center gap-2 py-3 bg-amber-400 text-white hover:bg-amber-900 transition disabled:opacity-50"
+              className="flex-1 text-xs py-2 rounded-full flex items-center justify-center gap-1
+              border border-[#6B3F3F] bg-[#6B3F3F] text-white shadow-sm
+              hover:bg-[#C96A6A] hover:border-[#C96A6A]
+              transition-all duration-200 active:scale-95 disabled:opacity-50"
             >
-              <FaShoppingCart />
+              <FaShoppingCart size={14} />
               {cartLoading ? "Adding..." : "Add to Cart"}
             </button>
 
