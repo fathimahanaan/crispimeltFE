@@ -11,7 +11,7 @@ export default function useResendOtp() {
 
     try {
       const res = await axios.post(
-        `${base_url}/auth/resend-otp`,
+        `${base_url}/auth/resendOtp`,
         { email },
         { withCredentials: true }
       );
