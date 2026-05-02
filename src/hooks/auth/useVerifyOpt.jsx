@@ -4,7 +4,7 @@ import { base_url } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-export default function useVerifyOtp() {
+export default function useVerifyOpt() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ export default function useVerifyOtp() {
 
     try {
       const res = await axios.post(
-        `${base_url}/auth/verify`, // ✅ FIXED
+        `${base_url}/auth/verify`,  
         { email, otp },
         { withCredentials: true },
       );
