@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import useRegister from "../../hooks/auth/useRegister";
+import { Link } from "react-router-dom";
 
 export default function RegisterPage() {
   const { register, loading } = useRegister();
@@ -28,9 +29,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,#fff7f2,white)] px-6 font-[Lora]">
-
       <div className="max-w-5xl w-full grid md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden border border-[#f1e2d9]">
-
         {/* LEFT IMAGE */}
         <div className="hidden md:flex items-center justify-center bg-[#FFF1E8] p-10">
           <img
@@ -42,7 +41,6 @@ export default function RegisterPage() {
 
         {/* FORM */}
         <div className="p-10 flex flex-col justify-center">
-
           <h1 className="text-3xl font-semibold text-[#5D3838] text-center">
             Create Account
           </h1>
@@ -58,7 +56,6 @@ export default function RegisterPage() {
               handleRegister();
             }}
           >
-
             <input
               type="text"
               placeholder="Full name"
@@ -111,9 +108,16 @@ export default function RegisterPage() {
             >
               {loading ? "Creating account..." : "Register"}
             </button>
-
+            <p className="text-center text-sm text-gray-500 mt-4">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-[#8B5E3C] font-medium hover:underline"
+              >
+                Login
+              </Link>
+            </p>
           </form>
-
         </div>
       </div>
     </div>
