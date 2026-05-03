@@ -17,12 +17,19 @@ export default function useAddtoCart() {
       );
 
       toast.success(res.data.message || "Added to cart");
-
       return res.data;
+
     } catch (err) {
-      toast.error(
-        err?.response?.data?.message || err?.message || "Failed to add to cart"
-      );
+      
+      if (err?.response?.status === 401) {
+        toast.error("Please login to add to cart");
+      } else {
+        toast.error(
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to add to cart"
+        );
+      }
     } finally {
       setLoading(false);
     }
