@@ -10,26 +10,25 @@ export default function RegisterPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleRegister = async () => {
+    setError("");
+
     if (password !== confirmPassword) {
-      return alert("Passwords do not match");
+      return setError("Passwords do not match");
     }
 
     if (password.length < 8) {
-      return alert("Password must be at least 8 characters");
+      return setError("Password must be at least 8 characters");
     }
 
     if (!/^[0-9]{10,15}$/.test(phoneNumber)) {
-      return alert("Phone number must be 10-15 digits");
+      return setError("Phone number must be 10-15 digits");
     }
 
-    const result = await register(name, email, password, phoneNumber);
-
-    // 🔥 fallback safety (if hook doesn't navigate)
-    if (result?.requireOtp || result?.success) {
-      localStorage.setItem("verifyEmail", email);
-    }
+    // ✅ Just call register — hook handles navigation and localStorage
+    await register(name, email, password, phoneNumber);
   };
 
   return (
@@ -75,7 +74,7 @@ export default function RegisterPage() {
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-[#e5d4c8] outline-none    p-3 rounded-sm"
+              className="border border-[#e5d4c8] outline-none p-3 rounded-sm"
               required
             />
 
@@ -84,7 +83,7 @@ export default function RegisterPage() {
               placeholder="Phone number"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className="border border-[#e5d4c8] outline-none    p-3 rounded-sm"
+              className="border border-[#e5d4c8] outline-none p-3 rounded-sm"
               required
             />
 
@@ -93,7 +92,7 @@ export default function RegisterPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-[#e5d4c8] outline-none    p-3 rounded-sm"
+              className="border border-[#e5d4c8] outline-none p-3 rounded-sm"
               required
             />
 
@@ -102,9 +101,14 @@ export default function RegisterPage() {
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="border border-[#e5d4c8] outline-none    p-3 rounded-sm"
+              className="border border-[#e5d4c8] outline-none p-3 rounded-sm"
               required
             />
+
+            {/* ✅ Inline error message instead of alert() */}
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
 
             <button
               type="submit"
@@ -113,6 +117,7 @@ export default function RegisterPage() {
             >
               {loading ? "Creating account..." : "Register"}
             </button>
+
             <p className="text-center text-sm text-gray-500 mt-4">
               Already have an account?{" "}
               <Link
