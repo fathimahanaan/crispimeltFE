@@ -12,6 +12,7 @@ import RegisterPage from "./page/auth/RegisterPage";
 import VerifyOtpPage from "./page/auth/VerifyOtpPage";
 import About from "./components/about/About";
 import Wishlist from "./components/wishlist/Wishlist";
+import CheckoutPage from "./components/checkout/CheckoutPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ function App() {
          {
           path: "wishlist",
           element:  <Wishlist/>,
+        },
+          {
+          path: "checkout",
+          element:  <CheckoutPage/>,
         }
         
       ],
