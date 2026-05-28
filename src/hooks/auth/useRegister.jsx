@@ -20,30 +20,14 @@ export default function useRegister() {
 
       toast.success(res.data.message);
 
-      // always prepare OTP flow
-      localStorage.setItem("verifyEmail", email);
-
-      navigate("/verify-otp", {
-        state: { email },
-      });
+     
+      navigate("/login");
 
     } catch (err) {
       const data = err?.response?.data;
 
-      // 🔥 IMPORTANT: user exists but not verified
-      if (data?.requireOtp) {
-        toast.info("OTP already sent. Please verify your account.");
-
-        localStorage.setItem("verifyEmail", data.email);
-
-        navigate("/verify-otp", {
-          state: { email: data.email },
-        });
-
-        return;
-      }
-
       toast.error(data?.message || "Registration failed");
+
     } finally {
       setLoading(false);
     }

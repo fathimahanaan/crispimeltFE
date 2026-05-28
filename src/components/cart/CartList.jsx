@@ -19,13 +19,14 @@ export default function CartList() {
   if (!cart || cart.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center font-[Lora] text-gray-500">
-        <h2 className="text-3xl text-[#3B2F2F] mb-2">Your Cart is Empty</h2>
-        <p className="text-sm">Add something sweet from the shop 🍰</p>
+ <div className="text-center py-20 text-amber-900">
+        Your  cart is empty
+      </div>
       </div>
     );
   }
 
-  // ✅ FIXED: prevents crash if product is null
+ 
   const total = (cart || []).reduce(
     (sum, item) => sum + (item?.product?.price ?? 0) * (item?.quantity ?? 0),
     0,

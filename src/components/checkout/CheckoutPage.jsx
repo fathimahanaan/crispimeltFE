@@ -1,27 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import usePreviewOrder from "../../hooks/previewOrder/usePreviewOrder";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import axios from "axios";
 
 export default function CheckoutPage() {
   const location = useLocation();
   const cartItems = location.state?.cartItems || [];
 
-  const { preview, loading, previewOrder } = usePreviewOrder();
-
-  const [showReview, setShowReview] = useState(false);
+  const [orderType, setOrderType] = useState("delivery");
 
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     address: "",
     emirate: "",
-    deliveryDate: "",
-    deliveryTime: "",
   });
-
-  const debounceRef = useRef(null);
-  const lastPayloadRef = useRef(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,10 +22,7 @@ export default function CheckoutPage() {
   const isFormValid =
     form.fullName &&
     form.phone &&
-    form.address &&
-    form.emirate &&
-    form.deliveryDate &&
-    form.deliveryTime;
+    (orderType === "pickup" ? true : form.address && form.emirate);
 
   const normalizedItems = cartItems.map((item) => ({
     product: item.product || item.productId,
@@ -42,217 +31,171 @@ export default function CheckoutPage() {
       item.name ||
       item.title ||
       item.productName ||
-      "Unnamed item",
+      "Item",
     price: item.price || 0,
     quantity: item.quantity || item.qty || 1,
   }));
 
-  useEffect(() => {
-    if (!showReview) return;
-    if (!isFormValid) return;
+  const WHATSAPP_NUMBER = "447867109215";
 
+  // WhatsApp enquiry only
+  const sendToWhatsApp = () => {
+    const text =
+      `🛒 Order Help Request\n\n` +
+      normalizedItems.map((i) => `• ${i.name} x${i.quantity}`).join("\n") +
+      `\n\n👤 Name: ${form.fullName}` +
+      `\n📞 Phone: ${form.phone}` +
+      `\n📦 Type: ${orderType}` +
+      `\n🚚 Delivery charge will be confirmed after contact`;
+
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
+  };
+
+  // Place order → backend
+  const placeOrder = async () => {
     const payload = {
       items: normalizedItems,
-      shippingAddress: {
-        fullName: form.fullName,
-        phone: form.phone,
-        address: form.address,
-        emirate: form.emirate,
-      },
-      deliveryDate: form.deliveryDate,
-      deliveryTime: form.deliveryTime,
+      orderType,
+      shippingAddress: form,
+      deliveryCharge: "To be confirmed after contact",
+      status: "pending",
     };
 
-    const payloadString = JSON.stringify(payload);
+    try {
+      await axios.post("http://localhost:5000/orders", payload);
 
-    if (lastPayloadRef.current === payloadString) return;
-    lastPayloadRef.current = payloadString;
+      alert(
+        "✅ Order received! We will contact you soon to confirm delivery charge and details."
+      );
 
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+      // optional redirect
+      // window.location.href = "/success";
 
-    debounceRef.current = setTimeout(() => {
-      previewOrder(payload);
-    }, 500);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [showReview, form, cartItems]);
+    } catch (err) {
+      console.log(err);
+      alert("❌ Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FFF7F2] py-16 px-6 font-[Lora]">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
-        {/* LEFT FORM */}
-         
-        <div className="bg-white/90 backdrop-blur-md p-8 rounded-3xl border border-gray-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-         
-           <Link
-            to="/cart"
-            className="text-sm text-gray-800 underline hover:text-black"
-          >
-            Back to Cart
-          </Link> 
-          <h1 className="text-2xl font-semibold mb-6">Checkout</h1>
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-xl">
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              name="fullName"
-              placeholder="Full Name"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition"
-            />
+        {/* BACK */}
+        <Link to="/cart" className="text-sm underline">
+          ← Back to Cart
+        </Link>
 
-            <input
-              name="phone"
-              placeholder="Phone"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition"
-            />
+        <h1 className="text-2xl font-semibold mt-4 mb-6">
+          Confirm Your Order
+        </h1>
 
-            <input
-              name="emirate"
-              placeholder="Emirate"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition md:col-span-2"
-            />
-
-            <textarea
-              name="address"
-              placeholder="Address"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition md:col-span-2"
-            />
-
-            <input
-              type="date"
-              name="deliveryDate"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition"
-            />
-
-            <input
-              type="time"
-              name="deliveryTime"
-              onChange={handleChange}
-              className="p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black/10 focus:outline-none transition"
-            />
-          </div>
-         
-          {/* REVIEW BUTTON */}
+        {/* ORDER TYPE */}
+        <div className="flex gap-4 mb-5">
           <button
-            disabled={!isFormValid}
-            onClick={() => setShowReview(true)}
-            className="w-full mt-6 bg-amber-900 text-white py-3 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.01] transition disabled:opacity-40 disabled:cursor-not-allowed"
+            onClick={() => setOrderType("delivery")}
+            className={`px-4 py-2 rounded-xl border ${
+              orderType === "delivery" ? "bg-black text-white" : ""
+            }`}
           >
-            Review Order
+            Delivery
+          </button>
+
+          <button
+            onClick={() => setOrderType("pickup")}
+            className={`px-4 py-2 rounded-xl border ${
+              orderType === "pickup" ? "bg-black text-white" : ""
+            }`}
+          >
+            Pickup
           </button>
         </div>
 
-        {/* BACKDROP */}
-        {showReview && (
-          <div
-            onClick={() => setShowReview(false)}
-            className="fixed inset-0 bg-black/40 z-40"
-          />
+        {/* SIMPLE INFO */}
+        {orderType === "delivery" && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-xl text-sm text-gray-700">
+             Delivery charge will be confirmed after we contact you based on your location.
+          </div>
         )}
 
-        {/* DRAWER */}
-        <div
-          className={`fixed top-0 right-0 h-full w-full md:w-[440px] bg-white/95 backdrop-blur-xl shadow-2xl border-l border-gray-100 z-50 transform transition-transform duration-300
-          ${showReview ? "translate-x-0" : "translate-x-full"}`}
-        >
-          <div className="p-6 flex flex-col h-full">
-            {/* HEADER */}
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Review Order</h2>
+        {/* FORM */}
+        <div className="grid md:grid-cols-2 gap-4">
 
-              <button
-                onClick={() => setShowReview(false)}
-                className="text-gray-500 text-xl"
-              >
-                ✕
-              </button>
-            </div>
+          <input
+            name="fullName"
+            placeholder="Full Name"
+            onChange={handleChange}
+            className="p-3 border rounded-xl"
+          />
 
-            {/* CONTENT */}
-            {!preview ? (
-              <p className="text-sm text-gray-500">Loading order summary...</p>
-            ) : (
-              <div className="space-y-4 text-sm flex-1 overflow-auto">
-                {/* ITEMS */}
-                <div className="bg-gradient-to-br from-gray-50 to-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                  <h3 className="font-medium mb-3">Items</h3>
+          <input
+            name="phone"
+            placeholder="Phone"
+            onChange={handleChange}
+            className="p-3 border rounded-xl"
+          />
 
-                  {normalizedItems.length === 0 ? (
-                    <p className="text-xs text-gray-500">No items in cart</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {normalizedItems.map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex justify-between items-start text-xs border-b border-gray-100 pb-3 last:border-b-0"
-                        >
-                          <div>
-                            <p className="font-medium text-sm">{item.name}</p>
-                            <p className="text-gray-500">
-                              Qty: {item.quantity}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+          {orderType === "delivery" && (
+            <>
+              <input
+                name="emirate"
+                placeholder="Emirate"
+                onChange={handleChange}
+                className="p-3 border rounded-xl md:col-span-2"
+              />
 
-                {/* COSTS */}
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>AED {preview.subtotal}</span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>AED {preview.shippingCharge}</span>
-                  </div>
-                </div>
-
-                {/* TOTAL */}
-                <div className="border-t border-gray-200 pt-4 flex justify-between font-bold text-base">
-                  <span>Total</span>
-                  <span>AED {preview.total}</span>
-                </div>
-
-                {/* DELIVERY */}
-                <div className="text-xs text-gray-500">
-                  Delivery: {preview.deliveryDate} {preview.deliveryTime}
-                </div>
-
-                {/* LOADING */}
-                {loading && (
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
-                    Updating...
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* FOOTER */}
-            <div className="mt-4 space-y-2">
-              <button className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition">
-                Place Order
-              </button>
-
-              <button
-                onClick={() => setShowReview(false)}
-                className="w-full text-sm text-gray-500 underline"
-              >
-                Close
-              </button>
-            </div>
-          </div>
+              <textarea
+                name="address"
+                placeholder="Address"
+                onChange={handleChange}
+                className="p-3 border rounded-xl md:col-span-2"
+              />
+            </>
+          )}
         </div>
+
+        {/* ITEMS SUMMARY */}
+        <div className="mt-6 text-sm">
+          <p className="font-semibold mb-2">Order Items:</p>
+
+          {normalizedItems.map((item, i) => (
+            <div key={i} className="flex justify-between text-gray-700">
+              <span>{item.name}</span>
+              <span>x{item.quantity}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="space-y-3 mt-8">
+
+          {/* PRIMARY */}
+          <button
+            disabled={!isFormValid}
+            onClick={placeOrder}
+            className="w-full bg-black text-white py-4 rounded-xl font-semibold disabled:opacity-50"
+          >
+             Place Order
+          </button>
+
+          {/* SECONDARY */}
+          <button
+            onClick={sendToWhatsApp}
+            className="w-full border border-green-600 text-green-700 py-3 rounded-xl"
+          >
+             Need Help? WhatsApp Us
+          </button>
+
+        </div>
+
+        {/* FOOT NOTE */}
+        <p className="text-xs text-gray-500 text-center mt-4">
+          After placing your order, our team will contact you to confirm delivery details and charges.
+        </p>
+
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { login, loading } = useLogin();
-  const navigate = useNavigate(); // ✅ MOVE HERE
+  const navigate = useNavigate();  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

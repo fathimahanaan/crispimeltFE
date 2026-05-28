@@ -5,10 +5,17 @@ import { navItems2 } from "../../utils/NavItems2";
 import { FaHeart, FaBars } from "react-icons/fa";
 import useGetWishlist from "../../hooks/wishlist/useGetWislist";
 import MobileMenu from "./MobileMenu";
+import { useAuth } from "../../context/AuthContext"; // 👈 from context
+import useLogout from "../../hooks/auth/useLogout";
 
 export default function Navbar() {
   const { wishlist } = useGetWishlist();
   const [open, setOpen] = useState(false);
+
+  const { user, loading } = useAuth(); // 👈 no more setUser needed here
+  const { logout } = useLogout();
+
+  if (loading) return null;
 
   return (
     <header className="sticky top-0 z-50">
@@ -30,7 +37,6 @@ export default function Navbar() {
             >
               <FaHeart className="text-xs" />
               Wishlist
-
               {wishlist?.length > 0 && (
                 <span className="absolute -top-2 -right-4 text-[10px] bg-[#C96A6A] text-white w-4 h-4 flex items-center justify-center rounded-full">
                   {wishlist.length}
@@ -41,10 +47,7 @@ export default function Navbar() {
 
           {/* LOGO */}
           <div className="flex justify-center">
-            <Link
-              to="/"
-              className="text-3xl font-[Corinthia] font-bold text-[#6B3F3F]"
-            >
+            <Link to="/" className="text-3xl font-[Corinthia] font-bold text-[#6B3F3F]">
               Crispimelts
             </Link>
           </div>
@@ -65,12 +68,26 @@ export default function Navbar() {
                 {item.name}
               </NavLink>
             ))}
+
+            {/* LOGIN / LOGOUT */}
+            {user ? (
+              <button
+                onClick={logout} // 👈 no more passing setUser manually
+                className="text-[#6B3F3F] hover:text-[#C96A6A]"
+              >
+                Logout
+              </button>
+            ) : (
+              <NavLink to="/login" className="text-[#6B3F3F] hover:text-[#C96A6A]">
+                Login
+              </NavLink>
+            )}
           </div>
 
         </div>
       </nav>
 
-      {/* NAVBAR 2 (DESKTOP ONLY) */}
+      {/* NAVBAR 2 */}
       <nav className="hidden md:block bg-white border-t border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-3 flex justify-center">
           <div className="flex items-center gap-10 text-[#6B3F3F] text-sm font-medium">
@@ -93,23 +110,13 @@ export default function Navbar() {
 
       {/* MOBILE HEADER */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-
-        {/* MENU BUTTON */}
         <button onClick={() => setOpen(true)}>
           <FaBars size={20} />
         </button>
-
-        {/* LOGO */}
-        <Link
-          to="/"
-          className="text-2xl font-[Corinthia] text-[#6B3F3F]"
-        >
+        <Link to="/" className="text-2xl font-[Corinthia] text-[#6B3F3F]">
           Crispimelts
         </Link>
-
-        {/* EMPTY RIGHT SPACE (balance) */}
         <div className="w-6"></div>
-
       </div>
 
       {/* MOBILE MENU */}

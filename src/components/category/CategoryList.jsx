@@ -19,7 +19,7 @@ export default function CategoryList() {
       {/* HEADER */}
       <div className="text-center mb-14">
         <h1 className="text-3xl font-semibold text-[#6B3F3F] tracking-tight">
-          Signature Dishes
+        Our Collections
         </h1>
 
         <p className="text-gray-500 mt-3 text-sm md:text-base">

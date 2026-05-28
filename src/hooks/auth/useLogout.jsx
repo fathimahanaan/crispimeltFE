@@ -1,34 +1,31 @@
 import { useState } from "react";
 import axios from "axios";
 import { base_url } from "../../utils/constants";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-export default function useLogin() {
+export default function useLogout() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useAuth(); // 👈 pull setUser from shared context
 
-  const login = async (email, password) => {
+  const logout = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${base_url}/auth/login`,
-        { email, password },
+      await axios.post(
+        `${base_url}/auth/logout`,
+        {},
         { withCredentials: true }
       );
 
-      setUser(res.data.user); // 👈 updates context immediately
-      toast.success(res.data.message);
-      navigate("/");
+      setUser(null); // 👈 clears context immediately
+      navigate("/login");
     } catch (err) {
-      const data = err?.response?.data;
-      toast.error(data?.message || "Login failed");
+      console.log(err);
     } finally {
       setLoading(false);
     }
   };
 
-  return { login, loading };
+  return { logout, loading };
 }
