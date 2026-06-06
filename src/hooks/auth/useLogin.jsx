@@ -19,7 +19,7 @@ export default function useLogin() {
         { withCredentials: true }
       );
 
-      setUser(res.data.user); // 👈 updates context immediately
+      setUser(res.data.user); 
       toast.success(res.data.message);
       navigate("/");
     } catch (err) {

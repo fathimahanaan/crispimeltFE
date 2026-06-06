@@ -18,7 +18,7 @@ export default function useVerifyOpt() {
 
       toast.success(res.data.message || "OTP verified successfully");
 
-      return true; // ✅ important
+      return true;  
     } catch (err) {
       toast.error(
         err?.response?.data?.message || "Invalid or expired OTP"
